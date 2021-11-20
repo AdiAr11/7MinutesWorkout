@@ -1,10 +1,9 @@
 package com.example.a7minutesworkout
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.a7minutesworkout.databinding.ActivityExerciseBinding
 
 class ExerciseActivity : AppCompatActivity() {
@@ -17,35 +16,60 @@ class ExerciseActivity : AppCompatActivity() {
     private var restProgress = 10
     private var exercisingProgress = 30
 
+    private var exerciseList: ArrayList<ExerciseModel>? = null
+    private var currentExerciseNumber: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityExerciseBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolBarExerciseActivity)
+        exerciseList = Constants.defaultExerciseList()
         addBackButtonToActionBar()
-        startStartingTimer()
+        setUpRestTimer()
     }
 
-    private fun startStartingTimer() {
+    private fun setUpRestTimer(){
+        binding.startingTimer.visibility = View.VISIBLE
+        binding.textView.visibility = View.VISIBLE
+        binding.exerciseNameTextView.visibility = View.INVISIBLE
+        binding.exerciseTimer.visibility = View.INVISIBLE
+        binding.exerciseImageView.visibility = View.INVISIBLE
+
+        if (countDownTimer != null) {
+            countDownTimer?.cancel()
+            restProgress = 10
+        }
+        startStartingRestingTimer()
+    }
+
+    private fun startStartingRestingTimer() {
 
         countDownTimer = object : CountDownTimer(timerDuration, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 binding.timerTextView.text = "${millisUntilFinished/1000}"
                 restProgress--
-                binding.startProgressBar.progress = restProgress
+                binding.restProgressBar.progress = restProgress
             }
 
             override fun onFinish() {
-                setUpExercisingTimer()
+                if (currentExerciseNumber < exerciseList?.size!!) {
+                    setUpExercisingTimer()
+                }
             }
         }.start()
     }
 
     private fun setUpExercisingTimer(){
         binding.startingTimer.visibility = View.INVISIBLE
+        binding.textView.visibility = View.INVISIBLE
+        binding.exerciseNameTextView.visibility = View.VISIBLE
         binding.exerciseTimer.visibility = View.VISIBLE
-        binding.textView.text = "Exercise Name"
+        binding.exerciseImageView.visibility = View.VISIBLE
+        currentExerciseNumber++
+        binding.exerciseImageView.setImageResource(exerciseList?.get(currentExerciseNumber)!!.getImage())
+        binding.exerciseNameTextView.text = exerciseList?.get(currentExerciseNumber)?.getExerciseName()
         if (exercisingCountDownTimer != null) {
             exercisingCountDownTimer?.cancel()
             exercisingProgress = 30
@@ -62,7 +86,8 @@ class ExerciseActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                Toast.makeText(this@ExerciseActivity, "Exercise Done", Toast.LENGTH_SHORT).show()
+                setUpRestTimer()
+
             }
         }.start()
     }

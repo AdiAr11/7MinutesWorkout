@@ -33,9 +33,15 @@ class ExerciseActivity : AppCompatActivity() {
     private fun setUpRestTimer(){
         binding.startingTimer.visibility = View.VISIBLE
         binding.textView.visibility = View.VISIBLE
+        binding.upComingTV.visibility = View.VISIBLE
+        binding.upComingExerciseTextView.visibility = View.VISIBLE
         binding.exerciseNameTextView.visibility = View.INVISIBLE
         binding.exerciseTimer.visibility = View.INVISIBLE
         binding.exerciseImageView.visibility = View.INVISIBLE
+
+        if (currentExerciseNumber < exerciseList!!.size - 1){
+            binding.upComingExerciseTextView.text = exerciseList!![currentExerciseNumber + 1].getExerciseName()
+        }
 
         if (countDownTimer != null) {
             countDownTimer?.cancel()
@@ -54,7 +60,7 @@ class ExerciseActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                if (currentExerciseNumber < exerciseList?.size!!) {
+                if (currentExerciseNumber < exerciseList?.size!! - 1) {
                     setUpExercisingTimer()
                 }
             }
@@ -64,6 +70,8 @@ class ExerciseActivity : AppCompatActivity() {
     private fun setUpExercisingTimer(){
         binding.startingTimer.visibility = View.INVISIBLE
         binding.textView.visibility = View.INVISIBLE
+        binding.upComingTV.visibility = View.INVISIBLE
+        binding.upComingExerciseTextView.visibility = View.INVISIBLE
         binding.exerciseNameTextView.visibility = View.VISIBLE
         binding.exerciseTimer.visibility = View.VISIBLE
         binding.exerciseImageView.visibility = View.VISIBLE

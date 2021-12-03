@@ -1,5 +1,6 @@
 package com.example.a7minutesworkout
 
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -143,7 +144,13 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 exerciseList!![currentExerciseNumber].setIsSelected(false)
                 exerciseList!![currentExerciseNumber].setIsCompleted(true)
                 adapter?.notifyDataSetChanged()
-                setUpRestTimer()
+                if (currentExerciseNumber == exerciseList?.size!! - 1){
+                    finish()
+                    val intent = Intent(this@ExerciseActivity, FinishActivity::class.java)
+                    startActivity(intent)
+                }
+                else
+                    setUpRestTimer()
             }
         }.start()
     }

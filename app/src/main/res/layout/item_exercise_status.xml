@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemTextVIew"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    tools:text="1"
+    android:layout_margin="5dp"
+    android:textSize="14sp"
+    android:gravity="center"
+    android:textStyle="bold"
+    android:textColor="#212121"
+    android:padding="3dp"
+    android:background="@drawable/item_circular_gray_color_background">
+
+</TextView>

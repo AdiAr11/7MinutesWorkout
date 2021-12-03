@@ -20,4 +20,8 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onNightModeChanged(mode: Int) {
+        super.onNightModeChanged(mode)
+    }
 }

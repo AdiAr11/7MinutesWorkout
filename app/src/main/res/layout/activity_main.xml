@@ -32,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/start"
+            android:textColor="@color/color_accent"
             android:textSize="22sp"
             android:textStyle="bold"
             android:layout_gravity="center"/>

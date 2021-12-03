@@ -1,20 +1,30 @@
 package com.example.a7minutesworkout
 
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a7minutesworkout.databinding.ActivityExerciseBinding
+import java.util.*
 
-class ExerciseActivity : AppCompatActivity() {
+class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var binding: ActivityExerciseBinding
     private var countDownTimer: CountDownTimer? = null
     private var exercisingCountDownTimer: CountDownTimer? = null
-    private var timerDuration: Long = 10000
-    private var exercisingDuration: Long = 30000
+    private var timerDuration: Long = 2000
+    private var exercisingDuration: Long = 3000
     private var restProgress = 10
     private var exercisingProgress = 30
+    private var mediaPlayer: MediaPlayer? = null
+    private var adapter: ExerciseStatusAdapter? = null
+
+    private lateinit var textToSpeech: TextToSpeech
 
     private var exerciseList: ArrayList<ExerciseModel>? = null
     private var currentExerciseNumber: Int = -1
@@ -26,11 +36,29 @@ class ExerciseActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolBarExerciseActivity)
         exerciseList = Constants.defaultExerciseList()
+        textToSpeech = TextToSpeech(this, this)
+        try {
+            val soundURI = Uri.parse("android.resource://com.example.a7minutesworkout/${R.raw.press_start}")
+            mediaPlayer = MediaPlayer.create(applicationContext, soundURI)
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+
         addBackButtonToActionBar()
         setUpRestTimer()
+        setUpExerciseStatusRecyclerView()
+
+    }
+
+    private fun setUpExerciseStatusRecyclerView(){
+        adapter = ExerciseStatusAdapter(exerciseList!!)
+        binding.exerciseStatusRecyclerView.adapter = adapter
+        binding.exerciseStatusRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun setUpRestTimer(){
+        playStartingSound()
         binding.startingTimer.visibility = View.VISIBLE
         binding.textView.visibility = View.VISIBLE
         binding.upComingTV.visibility = View.VISIBLE
@@ -48,6 +76,19 @@ class ExerciseActivity : AppCompatActivity() {
             restProgress = 10
         }
         startStartingRestingTimer()
+    }
+
+    private fun playStartingSound(){
+        try {
+            mediaPlayer?.isLooping = false
+            mediaPlayer?.start()
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
+
+    private fun speakOut(textToBeSpoken: String){
+        textToSpeech.speak(textToBeSpoken, TextToSpeech.QUEUE_FLUSH, null, "")
     }
 
     private fun startStartingRestingTimer() {
@@ -76,6 +117,11 @@ class ExerciseActivity : AppCompatActivity() {
         binding.exerciseTimer.visibility = View.VISIBLE
         binding.exerciseImageView.visibility = View.VISIBLE
         currentExerciseNumber++
+        exerciseList!![currentExerciseNumber].setIsSelected(true)
+        adapter?.notifyDataSetChanged()
+
+        speakOut(" ${exerciseList!![currentExerciseNumber].getExerciseName()}")
+
         binding.exerciseImageView.setImageResource(exerciseList?.get(currentExerciseNumber)!!.getImage())
         binding.exerciseNameTextView.text = exerciseList?.get(currentExerciseNumber)?.getExerciseName()
         if (exercisingCountDownTimer != null) {
@@ -94,8 +140,10 @@ class ExerciseActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
+                exerciseList!![currentExerciseNumber].setIsSelected(false)
+                exerciseList!![currentExerciseNumber].setIsCompleted(true)
+                adapter?.notifyDataSetChanged()
                 setUpRestTimer()
-
             }
         }.start()
     }
@@ -116,6 +164,26 @@ class ExerciseActivity : AppCompatActivity() {
         if (exercisingCountDownTimer != null) {
             exercisingCountDownTimer?.cancel()
             exercisingProgress = 30
+        }
+
+        if (textToSpeech != null){
+            textToSpeech.stop()
+            textToSpeech.shutdown()
+        }
+        if (mediaPlayer != null){
+            mediaPlayer!!.stop()
+        }
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS){
+            val result = textToSpeech.setLanguage(Locale.US)
+            if (result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA){
+                Log.e("TTS msg", "Language is not supported")
+            }
+        }
+        else{
+            Log.e("TTS msg", "Initialization failed, status: $status")
         }
     }
 

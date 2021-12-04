@@ -15,8 +15,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.startFrameLayout.setOnClickListener {
-            val intent = Intent(this, ExerciseActivity::class.java)
-            startActivity(intent)
+            val exerciseStartIntent = Intent(this, ExerciseActivity::class.java)
+            startActivity(exerciseStartIntent)
+        }
+
+        binding.bmiCalculatorFrameLayout.setOnClickListener {
+            val bmiCalculatorIntent = Intent(this, BMIcalculatorActivity::class.java)
+            startActivity(bmiCalculatorIntent)
         }
 
     }

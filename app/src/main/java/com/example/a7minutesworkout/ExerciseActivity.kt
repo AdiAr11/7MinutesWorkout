@@ -1,5 +1,6 @@
 package com.example.a7minutesworkout
 
+import android.app.Dialog
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
@@ -11,6 +12,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a7minutesworkout.databinding.ActivityExerciseBinding
+import com.example.a7minutesworkout.databinding.DialogCustomBackConfirmationBinding
 import java.util.*
 
 class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
@@ -159,7 +161,25 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         if (supportActionBar != null){
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
-        binding.toolBarExerciseActivity.setNavigationOnClickListener { onBackPressed() }
+        binding.toolBarExerciseActivity.setNavigationOnClickListener { customDialogForExit() }
+    }
+    private fun customDialogForExit(){
+        val customDialogBackButton = Dialog(this)
+        val exitDialogBinding = DialogCustomBackConfirmationBinding.inflate(layoutInflater)
+        customDialogBackButton.setContentView(exitDialogBinding.root)
+        customDialogBackButton.show()
+        exitDialogBinding.yesButton.setOnClickListener {
+            customDialogBackButton.dismiss()
+            this@ExerciseActivity.finish()
+        }
+        exitDialogBinding.noButton.setOnClickListener {
+            customDialogBackButton.dismiss()
+        }
+    }
+
+    override fun onBackPressed() {
+        customDialogForExit()
+        //super.onBackPressed()
     }
 
     override fun onDestroy() {

@@ -6,18 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".FinishActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolBarFinishActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="90dp"
         android:gravity="center"
         android:text="END"
         android:textSize="35sp"
         android:textColor="@color/color_accent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolBarFinishActivity" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -47,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Finish"
+        android:background="@drawable/finish_button_background"
         android:layout_margin="25dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -24,24 +24,74 @@ class BMIcalculatorActivity : AppCompatActivity() {
         }
         binding.bmiToolbar.setNavigationOnClickListener { onBackPressed() }
 
+        binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            if(checkedId == R.id.usRadioButton){
+                binding.heightTextInputLayout.visibility = View.INVISIBLE
+                binding.weightTextInputLayout.visibility = View.INVISIBLE
+                binding.weightUSPoundTextInputLayout.visibility = View.VISIBLE
+                binding.heightUSFeetTextInputLayout.visibility = View.VISIBLE
+                binding.heightUSInchTextInputLayout.visibility = View.VISIBLE
+                clearValues()
+            }
+            else if(checkedId == R.id.metricRadioButton){
+                binding.heightTextInputLayout.visibility = View.VISIBLE
+                binding.heightUSFeetTextInputLayout.visibility = View.INVISIBLE
+                binding.heightUSInchTextInputLayout.visibility = View.INVISIBLE
+                binding.weightTextInputLayout.visibility = View.VISIBLE
+                binding.weightUSPoundTextInputLayout.visibility = View.INVISIBLE
+                clearValues()
+            }
+        }
         binding.bmiCalculateButton.setOnClickListener {
-            if (areValuesAdded())
-                calculateBMI()
+            if (areUSvaluesAdded() && binding.radioGroup.checkedRadioButtonId == R.id.usRadioButton)
+                calculateUSunitBMI()
+
+            else if (areMetricValuesAdded() && binding.radioGroup.checkedRadioButtonId == R.id.metricRadioButton)
+                    calculateMetricBMI()
+
             else{
-                Toast.makeText(this, "Please enter both values", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter all the values", Toast.LENGTH_SHORT).show()
             }
         }
 
     }
 
-    private fun areValuesAdded(): Boolean{
-        return !(binding.weightEditText.text.isNullOrEmpty() || binding.heightEditText.text.isNullOrEmpty())
+    private fun clearValues(){
+        binding.weightEditText.text?.clear()
+        binding.weightUSPoundEditText.text?.clear()
+        binding.heightEditText.text?.clear()
+        binding.heightUSFeetEditText.text?.clear()
+        binding.heightUSInchEditText.text?.clear()
+        binding.textView.text = ""
+        binding.bmiTextView.text = ""
+        binding.messageTextView.text = ""
+        binding.remarkTextView.text = ""
     }
 
-    private fun calculateBMI(){
-        val weight = binding.weightEditText.text.toString().toFloat()
+    private fun areMetricValuesAdded(): Boolean{
+        return !(binding.weightEditText.text.isNullOrEmpty() || binding.heightEditText.text.isNullOrEmpty())
+    }
+    private fun areUSvaluesAdded(): Boolean{
+        return !(binding.weightUSPoundEditText.text.isNullOrEmpty() || binding.heightUSFeetEditText.text.isNullOrEmpty()
+                || binding.heightUSInchEditText.text.isNullOrEmpty())
+    }
+
+    private fun calculateMetricBMI(){
         val height = binding.heightEditText.text.toString().toFloat() / 100
+        val weight = binding.weightEditText.text.toString().toFloat()
         val bmi = weight/(height * height)
+        printBMIandMessages(bmi)
+    }
+
+    private fun calculateUSunitBMI(){
+        val weight = binding.weightUSPoundEditText.text.toString().toFloat()
+        val height = binding.heightUSFeetEditText.text.toString().toFloat() * 12 + binding.heightUSInchEditText.text.toString().toFloat()
+        val bmi = (weight / (height * height)) * 703
+        printBMIandMessages(bmi)
+    }
+
+    private fun printBMIandMessages(bmi: Float){
+
         binding.bmiTextView.visibility = View.VISIBLE
         val bmiValue = BigDecimal(bmi.toDouble()).setScale(3, RoundingMode.HALF_EVEN).toString()
         binding.bmiTextView.text = bmiValue

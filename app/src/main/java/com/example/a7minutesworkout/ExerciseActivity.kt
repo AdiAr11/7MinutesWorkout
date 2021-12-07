@@ -20,8 +20,8 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var binding: ActivityExerciseBinding
     private var countDownTimer: CountDownTimer? = null
     private var exercisingCountDownTimer: CountDownTimer? = null
-    private var timerDuration: Long = 2000
-    private var exercisingDuration: Long = 2000
+    private var timerDuration: Long = 10000
+    private var exercisingDuration: Long = 30000
     private var restProgress = 10
     private var exercisingProgress = 30
     private var mediaPlayer: MediaPlayer? = null

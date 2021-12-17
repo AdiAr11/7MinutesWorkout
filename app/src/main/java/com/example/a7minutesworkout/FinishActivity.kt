@@ -1,9 +1,12 @@
 package com.example.a7minutesworkout
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.a7minutesworkout.databinding.ActivityFinishBinding
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class FinishActivity : AppCompatActivity() {
 
@@ -14,6 +17,9 @@ class FinishActivity : AppCompatActivity() {
         binding = ActivityFinishBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val workoutHistoryDao: WorkoutHistoryDao = (application as WorkoutHistoryApp).database.workoutHistoryDao()
+        addRecord(workoutHistoryDao)
+
         setSupportActionBar(binding.toolBarFinishActivity)
         if (supportActionBar != null){
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -22,6 +28,14 @@ class FinishActivity : AppCompatActivity() {
 
         binding.finishButton.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun addRecord(workoutHistoryDao: WorkoutHistoryDao){
+        val sdf = SimpleDateFormat("dd/MMM/yyyy     hh:mm:ss", Locale.getDefault())
+        val currentDateAndTime = sdf.format(Date())
+        lifecycleScope.launch {
+            workoutHistoryDao.insert(WorkoutHistoryEntity(dateAndTime = currentDateAndTime))
         }
     }
 }

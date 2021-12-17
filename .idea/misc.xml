@@ -23,6 +23,7 @@
         <entry key="app/src/main/res/layout/activity_history.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.29583333333333334" />
         <entry key="app/src/main/res/layout/dialog_custom_back_confirmation.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/history_item_recycler_view.xml" value="0.335" />
         <entry key="app/src/main/res/layout/item_exercise_status.xml" value="0.45" />
       </map>
     </option>

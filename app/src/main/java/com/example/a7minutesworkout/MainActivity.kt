@@ -24,9 +24,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(bmiCalculatorIntent)
         }
 
+        binding.historyFrameLayout.setOnClickListener {
+            val intent = Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
+        }
+        /* val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate = sdf.format(Date())
+        System.out.println(" C DATE is  "+currentDate) */
+
     }
 
-    override fun onNightModeChanged(mode: Int) {
-        super.onNightModeChanged(mode)
-    }
 }
